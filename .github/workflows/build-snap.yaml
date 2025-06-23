@@ -13,27 +13,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Snapcraft
+    - name: Install Snapcraft and dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y snapd
+        sudo apt-get install -y snapd squashfuse fuse
+        sudo systemctl start snapd
+        
+        # Inštalácia core22 snap pred Snapcraftom
+        sudo snap install core22
         sudo snap install snapcraft --classic
 
     - name: Prepare build environment
       run: |
-        # Create directory for assets outside of snap/
+        # Presun súborov mimo snap priečinka
         mkdir -p snap_assets
-        
-        # Move wrapper and GUI files to snap_assets
         mv snap/wrapper snap_assets/
         mv snap/gui snap_assets/
-        
-        # Fix permissions for wrapper script
         chmod +x snap_assets/wrapper/dexmate-wrapper
 
-    - name: Build Snap (destructive mode)
+    - name: Build Snap
       run: |
-        snapcraft --destructive-mode
+        # Použitie klasického režimu namiesto destruktívneho
+        snapcraft --use-lxd
         mv *.snap dexmate.snap
 
     - name: Upload Snap artifact
