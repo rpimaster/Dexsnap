@@ -3,36 +3,23 @@ name: Build Snap Package
 on:
   push:
     branches: [main]
+  pull_request:
   release:
     types: [created]
-
-permissions:
-  contents: write
 
 jobs:
   build-snap:
     runs-on: ubuntu-latest
+    container:
+      image: snapcore/snapcraft:core22
+      options: --privileged
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install Snapcraft
+    - name: Build Snap
       run: |
-        sudo snap install snapcraft --classic
-        sudo snap install lxd
-        sudo lxd init --auto
-        
-        # Pridanie používateľa do skupiny lxd bez potreby newgrp
-        sudo usermod -a -G lxd $USER
-        # Nastavenie oprávnení pre LXD socket
-        sudo chown -R root:lxd /var/snap/lxd/common/lxd/
-        sudo chmod -R g+rwX /var/snap/lxd/common/lxd/
-
-    - name: Build Snap with LXD
-      run: |
-        # Nastavenie PATH pre prístup k lxd
-        export PATH=$PATH:/snap/bin
-        sg lxd -c "snapcraft --use-lxd"
+        snapcraft --destructive-mode
         mv *.snap dexmate.snap
 
     - name: Upload Snap artifact
@@ -40,11 +27,4 @@ jobs:
       with:
         name: dexmate-snap
         path: dexmate.snap
-        retention-days: 5
-
-    - name: Upload to Snap Store (on release)
-      if: github.event_name == 'release'
-      run: |
-        snapcraft upload --release=stable dexmate.snap
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        retention-days: 7
