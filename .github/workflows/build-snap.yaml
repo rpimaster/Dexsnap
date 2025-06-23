@@ -21,12 +21,18 @@ jobs:
         sudo snap install snapcraft --classic
         sudo snap install lxd
         sudo lxd init --auto
+        
+        # Pridanie používateľa do skupiny lxd bez potreby newgrp
         sudo usermod -a -G lxd $USER
-        newgrp lxd
+        # Nastavenie oprávnení pre LXD socket
+        sudo chown -R root:lxd /var/snap/lxd/common/lxd/
+        sudo chmod -R g+rwX /var/snap/lxd/common/lxd/
 
-    - name: Build Snap locally
+    - name: Build Snap with LXD
       run: |
-        snapcraft --use-lxd
+        # Nastavenie PATH pre prístup k lxd
+        export PATH=$PATH:/snap/bin
+        sg lxd -c "snapcraft --use-lxd"
         mv *.snap dexmate.snap
 
     - name: Upload Snap artifact
