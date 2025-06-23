@@ -8,25 +8,31 @@ on:
 
 jobs:
   build-snap:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Snapcraft
-      uses: snapcore/actions/setup-snapcraft@v1
-      with:
-        snapcraft-channel: latest/stable
-
-    - name: Install LXD
+    - name: Install system dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y snapd squashfuse fuse
+        sudo systemctl start snapd
+
+    - name: Install Snapcraft and LXD
+      run: |
+        sudo snap install core
+        sudo snap install snapcraft --classic
         sudo snap install lxd
         sudo lxd init --auto
-        sudo usermod -aG lxd $USER
-        sudo chmod a+rw /var/snap/lxd/common/lxd/unix.socket
+        sudo usermod -a -G lxd $USER
+        sudo chmod a+rwx /var/snap/lxd/common/lxd/
 
     - name: Build Snap
       run: |
+        # Use a workaround for group permissions
+        sudo chmod 0660 /var/snap/lxd/common/lxd/unix.socket
+        sudo chown root:lxd /var/snap/lxd/common/lxd/unix.socket
         snapcraft --use-lxd
         mv *.snap dexmate.snap
 
