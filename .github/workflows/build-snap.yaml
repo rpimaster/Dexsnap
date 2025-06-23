@@ -13,27 +13,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install system dependencies
+    - name: Install Snapcraft
       run: |
         sudo apt-get update
-        sudo apt-get install -y snapd squashfuse fuse
-        sudo systemctl start snapd
-
-    - name: Install Snapcraft and LXD
-      run: |
-        sudo snap install core
+        sudo apt-get install -y snapd
         sudo snap install snapcraft --classic
-        sudo snap install lxd
-        sudo lxd init --auto
-        sudo usermod -a -G lxd $USER
-        sudo chmod a+rwx /var/snap/lxd/common/lxd/
 
-    - name: Build Snap
+    - name: Prepare build environment
       run: |
-        # Use a workaround for group permissions
-        sudo chmod 0660 /var/snap/lxd/common/lxd/unix.socket
-        sudo chown root:lxd /var/snap/lxd/common/lxd/unix.socket
-        snapcraft --use-lxd
+        # Create directory for assets outside of snap/
+        mkdir -p snap_assets
+        
+        # Move wrapper and GUI files to snap_assets
+        mv snap/wrapper snap_assets/
+        mv snap/gui snap_assets/
+        
+        # Fix permissions for wrapper script
+        chmod +x snap_assets/wrapper/dexmate-wrapper
+
+    - name: Build Snap (destructive mode)
+      run: |
+        snapcraft --destructive-mode
         mv *.snap dexmate.snap
 
     - name: Upload Snap artifact

@@ -1,10 +1,8 @@
 name: dexmate
 base: core22
-version: '2.0.0'
-summary: Intuitive app for reviewing and monitoring Dexcom CGM data
-description: |
-  DexMate is an open-source tool for displaying real-time glucose levels from Dexcom CGM, 
-  including trends, delta values, and notifications — *not a substitute for medical care*.
+version: git
+summary: Intuitive Dexcom CGM monitoring app
+description: Real-time glucose levels with trends and notifications
 grade: stable
 confinement: strict
 
@@ -14,13 +12,10 @@ apps:
     desktop: usr/share/applications/dexmate.desktop
     plugs:
       - desktop
-      - home
       - network
-      - network-bind
+      - home
       - opengl
       - pulseaudio
-      - x11
-      - wayland
       - gsettings
 
 parts:
@@ -37,20 +32,17 @@ parts:
     stage-packages:
       - libglib2.0-0
       - libgtk-3-0
-      - libx11-6
       - libgdk-pixbuf-2.0-0
-      - libnotify4
-      - libnss3
 
   wrapper:
     plugin: dump
-    source: snap/wrapper
+    source: snap_assets/wrapper
     organize:
       dexmate-wrapper: bin/dexmate-wrapper
 
   desktop:
     plugin: dump
-    source: snap/gui
+    source: snap_assets/gui
     organize:
       dexmate.desktop: usr/share/applications/dexmate.desktop
       logo.png: meta/gui/logo.png
