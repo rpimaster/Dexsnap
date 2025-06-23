@@ -1,0 +1,35 @@
+name: Build Snap Package
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [created]
+
+jobs:
+  build-snap:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Snapcraft
+      uses: snapcore/action-setup@v1
+      with:
+        snapcraft-channel: latest/stable
+
+    - name: Build Snap with Remote Build
+      run: |
+        snapcraft remote-build --build-on=amd64,arm64
+      env:
+        SNAPCRAFT_BUILD_ENVIRONMENT: host
+        SNAPCRAFT_REMOTE_BUILD_STRATEGY: fallback
+        LAUNCHPAD_EMAIL: ${{ secrets.LAUNCHPAD_EMAIL }}
+        LAUNCHPAD_TOKEN: ${{ secrets.LAUNCHPAD_TOKEN }}
+        LAUNCHPAD_USERNAME: ${{ secrets.LAUNCHPAD_USERNAME }}
+
+    - name: Upload Snap Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: snap-packages
+        path: ./*.snap
