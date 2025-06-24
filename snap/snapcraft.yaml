@@ -23,6 +23,8 @@ apps:
       - x11
       - wayland
       - gsettings
+    environment:
+      PATH: $SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH
 
 parts:
   app:
@@ -34,11 +36,16 @@ parts:
       - libblas-dev
       - liblapack-dev
       - pkg-config
+      - python3-dev
+      - build-essential
+      - liblzma-dev
+      - libbz2-dev
     python-packages:
+      - pyinstaller
       - pydexcom
       - notify_py
       - scikit-learn
-      - scipy==1.13.0  # Pinned version
+      - scipy==1.13.0
       - cryptography
       - requests
       - pillow
@@ -51,6 +58,17 @@ parts:
       - libxcb1
       - libxau6
       - libnotify4
+    override-build: |
+      # Build the executable with PyInstaller
+      pyinstaller --onefile Dex_new.py --name DexMate --add-data "logo_png.png:." 
+      
+      # Install the binary to bin/
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp dist/DexMate $SNAPCRAFT_PART_INSTALL/bin/dexmate
+      
+      # Install the logo to share/
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share
+      cp logo_png.png $SNAPCRAFT_PART_INSTALL/share/logo.png
 
   wrapper:
     plugin: dump
@@ -61,10 +79,8 @@ parts:
     organize:
       dexmate-wrapper: bin/dexmate-wrapper
 
-
   desktop:
     plugin: dump
     source: assets/gui
     organize:
       dexmate.desktop: usr/share/applications/dexmate.desktop
-      logo.png: meta/gui/logo.png
