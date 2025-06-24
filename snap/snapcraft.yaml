@@ -28,14 +28,21 @@ parts:
   app:
     plugin: python
     source: src
-    build-packages: [git]
+    build-packages:
+      - git
+      - gfortran
+      - libblas-dev
+      - liblapack-dev
+      - pkg-config
     python-packages:
       - pydexcom
-      - notify-py
+      - notify_py
       - scikit-learn
+      - scipy==1.13.0  # Pinned version
       - cryptography
       - requests
       - pillow
+      - packaging
     stage-packages:
       - libglib2.0-0
       - libgtk-3-0
@@ -47,13 +54,13 @@ parts:
 
   wrapper:
     plugin: dump
-    source: assets/wrapper  # Updated path
+    source: assets/wrapper
     organize:
       dexmate-wrapper: bin/dexmate-wrapper
 
   desktop:
     plugin: dump
-    source: assets/gui     # Updated path
+    source: assets/gui
     organize:
       dexmate.desktop: usr/share/applications/dexmate.desktop
       logo.png: meta/gui/logo.png
