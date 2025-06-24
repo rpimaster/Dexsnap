@@ -1,6 +1,6 @@
 name: dexmate
 base: core22
-version: git  # ✅ Auto-detects version from Git tags
+version: git
 summary: Intuitive Dexcom CGM monitoring app
 description: |
   DexMate provides real-time glucose monitoring with trends, 
@@ -28,8 +28,7 @@ parts:
   app:
     plugin: python
     source: src
-    # Add Git to access version info
-    build-packages: [git]  # ✅ Required for version: git
+    build-packages: [git]
     python-packages:
       - pydexcom
       - notify-py
@@ -48,13 +47,13 @@ parts:
 
   wrapper:
     plugin: dump
-    source: snap_assets/wrapper
+    source: assets/wrapper  # Updated path
     organize:
       dexmate-wrapper: bin/dexmate-wrapper
 
   desktop:
     plugin: dump
-    source: snap_assets/gui
+    source: assets/gui     # Updated path
     organize:
       dexmate.desktop: usr/share/applications/dexmate.desktop
       logo.png: meta/gui/logo.png

@@ -1,5 +1,0 @@
-#!/bin/bash
-export PYTHONPATH=$SNAP/lib/python3.10/site-packages:$PYTHONPATH
-export LD_LIBRARY_PATH=$SNAP/lib:$LD_LIBRARY_PATH
-export XDG_DATA_DIRS=$SNAP/usr/share:$XDG_DATA_DIRS
-$SNAP/usr/bin/python3 $SNAP/src/main.py "$@"

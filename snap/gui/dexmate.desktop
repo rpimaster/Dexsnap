@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=DexMate
-Exec=dexmate
-Icon=${SNAP}/meta/gui/logo.png
-Type=Application
-Categories=Utility;Medical;
-Comment=Monitor Dexcom CGM data
-Terminal=false
