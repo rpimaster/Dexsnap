@@ -23,6 +23,9 @@ apps:
       - x11
       - wayland
       - gsettings
+    environment:
+      # Ensure Python finds Tkinter libraries
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/tk8.6:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/tcl8.6:$LD_LIBRARY_PATH
 
 parts:
   app:
@@ -36,6 +39,9 @@ parts:
       - pkg-config
       - python3-dev
       - build-essential
+      - python3-tk  # Required for tkinter
+      - tcl-dev
+      - tk-dev
     python-packages:
       - pyinstaller
       - pydexcom
@@ -54,12 +60,18 @@ parts:
       - libxcb1
       - libxau6
       - libnotify4
+      - python3-tk  # Required at runtime
+      - tcl8.6
+      - tk8.6
     override-build: |
       # First run default python build
       snapcraftctl build
       
       # Then build executable with PyInstaller
-      pyinstaller --onefile Dex_new.py --name dexmate
+      # Explicitly include Tcl/Tk directories
+      pyinstaller --onefile Dex_new.py --name dexmate \
+        --paths $SNAPCRAFT_PART_INSTALL/usr/lib/python3.*/site-packages \
+        --add-data "$SNAPCRAFT_PART_INSTALL/usr/lib/python3.*/tkinter:tkinter"
       
       # Install the binary to bin/ directory
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
@@ -69,7 +81,6 @@ parts:
     plugin: dump
     source: assets/wrapper
     override-build: |
-      # Ensure wrapper has execute permissions
       chmod 755 $SNAPCRAFT_PART_SRC/dexmate-wrapper
       snapcraftctl build
     organize:
