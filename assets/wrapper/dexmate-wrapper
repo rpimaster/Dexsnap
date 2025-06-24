@@ -1,4 +1,3 @@
 #!/bin/sh
-# Wrapper for launching the DexMate PyInstaller binary inside the snap
-
-exec "$SNAP/src/DexMate" "$@"
+# Wrapper for launching DexMate inside the snap
+exec "$SNAP/bin/dexmate" "$@"

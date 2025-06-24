@@ -37,15 +37,15 @@ parts:
       - python3-dev
       - build-essential
     python-packages:
+      - pyinstaller
       - pydexcom
       - notify_py
       - scikit-learn
-      - scipy==1.13.0  # Pinned version
+      - scipy==1.13.0
       - cryptography
       - requests
       - pillow
       - packaging
-      - pyinstaller  # Add pyinstaller to build executable
     stage-packages:
       - libglib2.0-0
       - libgtk-3-0
@@ -54,22 +54,22 @@ parts:
       - libxcb1
       - libxau6
       - libnotify4
-    # Add build step to create the executable
     override-build: |
       # First run default python build
       snapcraftctl build
       
       # Then build executable with PyInstaller
-      pyinstaller --onefile Dex_new.py --name DexMate
+      pyinstaller --onefile Dex_new.py --name dexmate
       
       # Install the binary to bin/ directory
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp dist/DexMate $SNAPCRAFT_PART_INSTALL/bin/
+      cp dist/dexmate $SNAPCRAFT_PART_INSTALL/bin/
 
   wrapper:
     plugin: dump
     source: assets/wrapper
     override-build: |
+      # Ensure wrapper has execute permissions
       chmod 755 $SNAPCRAFT_PART_SRC/dexmate-wrapper
       snapcraftctl build
     organize:
