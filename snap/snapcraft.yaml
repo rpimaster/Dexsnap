@@ -57,6 +57,8 @@ parts:
     source: assets/wrapper
     organize:
       dexmate-wrapper: bin/dexmate-wrapper
+    override-build: |
+      chmod 755 $SNAPCRAFT_PART_INSTALL/bin/dexmate-wrapper
 
   desktop:
     plugin: dump
