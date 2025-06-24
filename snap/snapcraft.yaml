@@ -91,4 +91,4 @@ parts:
     source: assets/gui
     organize:
       dexmate.desktop: usr/share/applications/dexmate.desktop
-      logo.png: meta/gui/logo.png
+      logo_png.png: meta/gui/logo_png.png
