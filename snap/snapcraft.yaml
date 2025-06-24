@@ -1,8 +1,13 @@
 name: dexmate
 base: core22
 version: git
+version-script: |
+  echo $(git describe --tags --dirty) | sed 's/^v//'
 summary: Intuitive Dexcom CGM monitoring app
-description: Real-time glucose levels with trends and notifications
+description: |
+  DexMate provides real-time glucose monitoring with trends, 
+  notifications, and data visualization for Dexcom CGM users.
+  Note: This is not a medical device.
 grade: stable
 confinement: strict
 
@@ -12,10 +17,13 @@ apps:
     desktop: usr/share/applications/dexmate.desktop
     plugs:
       - desktop
-      - network
       - home
+      - network
+      - network-bind
       - opengl
       - pulseaudio
+      - x11
+      - wayland
       - gsettings
 
 parts:
@@ -33,6 +41,10 @@ parts:
       - libglib2.0-0
       - libgtk-3-0
       - libgdk-pixbuf-2.0-0
+      - libx11-6
+      - libxcb1
+      - libxau6
+      - libnotify4
 
   wrapper:
     plugin: dump
