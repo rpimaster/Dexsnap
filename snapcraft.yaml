@@ -1,8 +1,6 @@
 name: dexmate
 base: core22
-version: git
-version-script: |
-  echo $(git describe --tags --dirty) | sed 's/^v//'
+version: git  # ✅ Auto-detects version from Git tags
 summary: Intuitive Dexcom CGM monitoring app
 description: |
   DexMate provides real-time glucose monitoring with trends, 
@@ -30,6 +28,8 @@ parts:
   app:
     plugin: python
     source: src
+    # Add Git to access version info
+    build-packages: [git]  # ✅ Required for version: git
     python-packages:
       - pydexcom
       - notify-py
