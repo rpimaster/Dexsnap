@@ -52,6 +52,23 @@ from sklearn.utils import resample
 # Get platform-specific application support directory
 def get_app_support_dir():
     """Determine the application support directory with fallbacks for restricted environments."""
+    # 0. Check for snap environment first (special handling)
+    if 'SNAP' in os.environ:
+        # Use SNAP_USER_DATA for per-user persistent storage in snap environment
+        snap_user_data = os.environ.get('SNAP_USER_DATA', '')
+        if snap_user_data:
+            snap_path = os.path.join(snap_user_data, "DexMateData")
+            try:
+                os.makedirs(snap_path, exist_ok=True)
+                # Test write permission
+                test_file = os.path.join(snap_path, 'write_test.tmp')
+                with open(test_file, 'w') as f:
+                    f.write("test")
+                os.remove(test_file)
+                return snap_path
+            except Exception as e:
+                logging.warning(f"Snap data directory not writable: {e}. Using fallback.")
+    
     # 1. Check custom environment variable first
     custom_path = os.environ.get('DEXMATE_DATA_PATH')
     if custom_path:
