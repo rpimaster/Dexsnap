@@ -57,21 +57,25 @@ parts:
       - tk8.6
     override-build: |
       snapcraftctl build
-
-      # Install dependencies locally
+    
+      # Install Python dependencies to a local directory
       pip3 install --target=lib \
         pydexcom notify-py scikit-learn scipy==1.13.0 \
         cryptography requests pillow packaging
-
-      # PyInstaller build
+    
+      # Install PyInstaller globally for the build process
+      pip3 install pyinstaller
+    
+      # Build the standalone binary
       pyinstaller Dex_new.py \
         --name dexmate \
         --onefile \
         --add-data "logo_png.png:." \
         --paths=lib
-
+    
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       cp dist/dexmate $SNAPCRAFT_PART_INSTALL/bin/
+
 
   wrapper:
     plugin: dump
