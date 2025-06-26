@@ -67,11 +67,14 @@ parts:
       # First run default python build
       snapcraftctl build
       
+      # Copy logo to share directory with consistent naming
+      mkdir -p $SNAPCRAFT_PART_INSTALL/share
+      cp logo.png.png $SNAPCRAFT_PART_INSTALL/share/logo_png.png
+      
       # Then build executable with PyInstaller
-      # Explicitly include Tcl/Tk directories
       pyinstaller --onefile Dex_new.py --name dexmate \
-        --paths $SNAPCRAFT_PART_INSTALL/usr/lib/python3.*/site-packages \
-        --add-data "$SNAPCRAFT_PART_INSTALL/usr/lib/python3.*/tkinter:tkinter"
+        --add-data "$SNAPCRAFT_PART_INSTALL/share/logo_png.png:." \
+        --paths $SNAPCRAFT_PART_INSTALL/usr/lib/python3.*/site-packages
       
       # Install the binary to bin/ directory
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
