@@ -41,7 +41,6 @@ parts:
       - pkg-config
       - gfortran
       - python3-pip
-      - pyinstaller
       - tcl-dev
       - tk-dev
     stage-packages:
