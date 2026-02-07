@@ -62,8 +62,8 @@ parts:
         pydexcom notify-py scikit-learn scipy==1.13.0 \
         cryptography requests pillow packaging pyinstaller
     
-      # Add the local lib folder to Python path
-      export PYTHONPATH=$SNAPCRAFT_PART_BUILD/lib:$PYTHONPATH
+      # Add local lib folder to Python path (avoid unbound variable)
+      export PYTHONPATH=$SNAPCRAFT_PART_BUILD/lib:${PYTHONPATH:-}
     
       # Run PyInstaller via Python module
       python3 -m PyInstaller Dex_new.py \
@@ -74,6 +74,7 @@ parts:
     
       mkdir -p $SNAPCRAFT_PART_INSTALL/bin
       cp dist/dexmate $SNAPCRAFT_PART_INSTALL/bin/
+
 
 
 
