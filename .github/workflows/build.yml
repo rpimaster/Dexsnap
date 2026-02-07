@@ -16,6 +16,12 @@ jobs:
           sudo apt update
           sudo apt full-upgrade -y
 
+      - name: Install build dependencies
+        run: |
+          sudo apt install -y \
+            build-essential gfortran git libblas-dev liblapack-dev pkg-config \
+            python3-dev python3-pip python3-tk tcl-dev tk-dev
+
       - name: Install Snapcraft
         run: sudo snap install snapcraft --classic
 
