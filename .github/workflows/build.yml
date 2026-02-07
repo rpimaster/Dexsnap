@@ -1,0 +1,23 @@
+name: Build DexMate Snap
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update system packages
+        run: |
+          sudo apt update
+          sudo apt full-upgrade -y
+
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Build Snap
+        run: snapcraft
